@@ -1,5 +1,7 @@
 package account;
 
+import notifier.ConsoleNotifierService;
+import notifier.NotifierService;
 import person.AccountHolder;
 import java.util.UUID;
 
@@ -9,6 +11,8 @@ public abstract class BankAccount {
     private AccountHolder accountHolder;
     private String accountNumber;
     private double balance;
+
+    private NotifierService notifier = new ConsoleNotifierService();
 
     public BankAccount(String accountNumber, AccountHolder accountHolder) {
         this.uuid = UUID.randomUUID().toString();
@@ -33,11 +37,16 @@ public abstract class BankAccount {
         return balance;
     }
 
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
     public void add(double amount){
         if (amount<0) {
             throw new IllegalArgumentException("nice try");
         }
         this.balance += amount;
+        notifier.notify("money added");
     }
 
     public void sub(double amount){
@@ -46,5 +55,4 @@ public abstract class BankAccount {
         }
         this.balance -= amount;
     }
-
 }
