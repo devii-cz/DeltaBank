@@ -1,4 +1,5 @@
 import account.*;
+import history.TransferLoggerService;
 import person.AccountHolder;
 import person.AccountHolderFactory;
 import transfer.DepositService;
@@ -17,9 +18,11 @@ public class Main {
         BankAccount businessAccount = accountCreator.newBusinessAccount(holder);
         BankAccount studentAccount = accountCreator.newStudentAccount(holder, "DELTA");
 
-        DepositService depositService = new DepositService();
-        TransferService transferService = new TransferService();
+        TransferLoggerService transferLoggerService = new TransferLoggerService();
+        DepositService depositService = new DepositService(transferLoggerService);
+        TransferService transferService = new TransferService(transferLoggerService);
 
+        IO.println(currentAccount.getAccountNumber());
         depositService.deposit(currentAccount, 5000);
         depositService.deposit(businessAccount, 10000);
 
@@ -48,6 +51,8 @@ public class Main {
         } catch (IllegalArgumentException e) {
             IO.println("Zachycena chyba: " + e.getMessage());
         }
+
+        transferLoggerService.printHistory();
     }
 
     private static void printBalances(BankAccount current, BankAccount business, BankAccount student) {

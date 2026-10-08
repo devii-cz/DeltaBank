@@ -3,10 +3,17 @@ package transfer;
 import account.BankAccount;
 import account.BusinessAccount;
 import account.StudentAccount;
+import history.TransferLoggerService;
 
 public class TransferService {
 
     private static final double BUSINESS_TRANSFER_FEE_RATE = 0.003;
+
+    private TransferLoggerService transferLoggerService;
+
+    public TransferService(TransferLoggerService transferLoggerService) {
+        this.transferLoggerService = transferLoggerService;
+    }
 
     public void transfer(BankAccount fromAccount, BankAccount toAccount, double amount) {
         if (fromAccount == null || toAccount == null) {
@@ -35,6 +42,12 @@ public class TransferService {
 
         fromAccount.setBalance(newBalance);
         toAccount.setBalance(toAccount.getBalance() + amount);
+
+        transferLoggerService.logTransfer(
+                fromAccount.getAccountNumber(),
+                toAccount.getAccountNumber(),
+                amount
+        );
     }
 
     private int getWithdrawLimit(BankAccount account) {
