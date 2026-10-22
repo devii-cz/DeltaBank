@@ -1,4 +1,7 @@
 import account.*;
+import account.serialization.BankAccountGsonSerializer;
+import account.serialization.BankAccountSerializer;
+import account.serialization.BankAccountXmlSerializer;
 import history.TransferLoggerService;
 import person.AccountHolder;
 import person.AccountHolderFactory;
@@ -12,11 +15,38 @@ public class Main {
         AccountHolderFactory creator = new AccountHolderFactory();
         AccountHolder holder = creator.newAccountHolder("Daniel", "Bisko");
 
-        BankAccountFactory accountCreator = new BankAccountFactory();
+        AccountService original = new BankAccountService();
 
-        BankAccount currentAccount = accountCreator.newCurrentAccount(holder);
-        BankAccount businessAccount = accountCreator.newBusinessAccount(holder);
-        BankAccount studentAccount = accountCreator.newStudentAccount(holder, "DELTA");
+        IO.println("ORIGINAL");
+        IO.println("=========");
+        BankAccount currentAccount = original.createCurrentAccount(holder);
+
+        IO.println("WITH LOGGER");
+        AccountService withLogger = new LoggingAccountService(original);
+        withLogger.createBusinessAccount(holder);
+        IO.println("========");
+
+        IO.println("WITH TIME LOGGER");
+        AccountService withTimeLogger = new TimeLoggingAccountService(original);
+        withTimeLogger.createSavingsAccount(holder);
+        IO.println("========");
+
+        IO.println("WITH LOGGER AND TIME LOGGER");
+        AccountService withLoggerAndTimeLogger =
+                new TimeLoggingAccountService(new LoggingAccountService(original));
+        BankAccount studentAccount = withLoggerAndTimeLogger.createStudentAccount(holder, "DELTA");
+        IO.println("========");
+
+        BankAccount businessAccount = original.getBankAccounts().get(1);
+
+        BankAccountSerializer bankAccountJsonSerializer = new BankAccountGsonSerializer();
+        BankAccountSerializer bankAccountXmlSerializer = new BankAccountXmlSerializer();
+
+        IO.println(bankAccountXmlSerializer.serialize(currentAccount));
+        IO.println(bankAccountXmlSerializer.serializeAll(original.getBankAccounts()));
+
+        IO.println(bankAccountJsonSerializer.serialize(currentAccount));
+        IO.println(bankAccountJsonSerializer.serializeAll(original.getBankAccounts()));
 
         TransferLoggerService transferLoggerService = new TransferLoggerService();
         DepositService depositService = new DepositService(transferLoggerService);
