@@ -1,7 +1,7 @@
 import account.*;
-import account.serialization.BankAccountGsonSerializer;
 import account.serialization.BankAccountSerializer;
-import account.serialization.BankAccountXmlSerializer;
+import container.Container;
+import container.ContainerFactory;
 import history.TransferLoggerService;
 import person.AccountHolder;
 import person.AccountHolderFactory;
@@ -12,10 +12,12 @@ public class Main {
 
     public static void main(String[] args) {
 
-        AccountHolderFactory creator = new AccountHolderFactory();
+        Container container = new ContainerFactory().create();
+
+        AccountHolderFactory creator = container.getAccountHolderFactory();
         AccountHolder holder = creator.newAccountHolder("Daniel", "Bisko");
 
-        AccountService original = new BankAccountService();
+        AccountService original = container.getAccountService();
 
         IO.println("ORIGINAL");
         IO.println("=========");
@@ -39,8 +41,8 @@ public class Main {
 
         BankAccount businessAccount = original.getBankAccounts().get(1);
 
-        BankAccountSerializer bankAccountJsonSerializer = new BankAccountGsonSerializer();
-        BankAccountSerializer bankAccountXmlSerializer = new BankAccountXmlSerializer();
+        BankAccountSerializer bankAccountJsonSerializer = container.getJsonSerializer();
+        BankAccountSerializer bankAccountXmlSerializer = container.getXmlSerializer();
 
         IO.println(bankAccountXmlSerializer.serialize(currentAccount));
         IO.println(bankAccountXmlSerializer.serializeAll(original.getBankAccounts()));
@@ -48,9 +50,9 @@ public class Main {
         IO.println(bankAccountJsonSerializer.serialize(currentAccount));
         IO.println(bankAccountJsonSerializer.serializeAll(original.getBankAccounts()));
 
-        TransferLoggerService transferLoggerService = new TransferLoggerService();
-        DepositService depositService = new DepositService(transferLoggerService);
-        TransferService transferService = new TransferService(transferLoggerService);
+        TransferLoggerService transferLoggerService = container.getTransferLoggerService();
+        DepositService depositService = container.getDepositService();
+        TransferService transferService = container.getTransferService();
 
         IO.println(currentAccount.getAccountNumber());
         depositService.deposit(currentAccount, 5000);

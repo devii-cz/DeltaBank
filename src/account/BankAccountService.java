@@ -7,8 +7,12 @@ import java.util.List;
 
 public class BankAccountService implements AccountService {
 
-    private final BankAccountFactory bankAccountFactory = new BankAccountFactory();
+    private final BankAccountFactory bankAccountFactory;
     private final List<BankAccount> bankAccounts = new ArrayList<>();
+
+    public BankAccountService(BankAccountFactory bankAccountFactory) {
+        this.bankAccountFactory = bankAccountFactory;
+    }
 
     @Override
     public BankAccount createCurrentAccount(AccountHolder accountHolder) {

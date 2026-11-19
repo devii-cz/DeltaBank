@@ -5,8 +5,12 @@ import java.util.List;
 
 public class TransferLoggerService {
 
-    private List<Transaction> history = new ArrayList<>();
-    private TransactionFactory transactionFactory = new TransactionFactory();
+    private final List<Transaction> history = new ArrayList<>();
+    private final TransactionFactory transactionFactory;
+
+    public TransferLoggerService(TransactionFactory transactionFactory) {
+        this.transactionFactory = transactionFactory;
+    }
 
     public void logTransfer(String fromAccountNumber, String toAccountNumber, double amount) {
         Transaction transaction = transactionFactory.newTransfer(fromAccountNumber, toAccountNumber, amount);
