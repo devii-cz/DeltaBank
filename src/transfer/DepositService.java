@@ -24,6 +24,10 @@ public class DepositService {
 
         bankAccount.setBalance(newBalance);
 
-        transferLoggerService.logDeposit(bankAccount.getAccountNumber(), amount);
+        transferLoggerService.logDeposit(
+                bankAccount.getAccountNumber(),
+                amount,
+                bankAccount.getCurrency()
+        );
     }
 }

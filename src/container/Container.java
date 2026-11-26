@@ -3,6 +3,8 @@ package container;
 import account.AccountService;
 import account.BankAccountFactory;
 import account.serialization.BankAccountSerializer;
+import currency.CurrencyConverter;
+import currency.MoneyPrinter;
 import history.TransactionFactory;
 import history.TransferLoggerService;
 import person.AccountHolderFactory;
@@ -22,6 +24,8 @@ public class Container {
     private final TransferService transferService;
     private final BankAccountSerializer jsonSerializer;
     private final BankAccountSerializer xmlSerializer;
+    private final CurrencyConverter currencyConverter;
+    private final MoneyPrinter moneyPrinter;
 
     public Container(
             AccountHolderFactory accountHolderFactory,
@@ -33,7 +37,9 @@ public class Container {
             WithdrawService withdrawService,
             TransferService transferService,
             BankAccountSerializer jsonSerializer,
-            BankAccountSerializer xmlSerializer
+            BankAccountSerializer xmlSerializer,
+            CurrencyConverter currencyConverter,
+            MoneyPrinter moneyPrinter
     ) {
         this.accountHolderFactory = accountHolderFactory;
         this.bankAccountFactory = bankAccountFactory;
@@ -45,6 +51,8 @@ public class Container {
         this.transferService = transferService;
         this.jsonSerializer = jsonSerializer;
         this.xmlSerializer = xmlSerializer;
+        this.currencyConverter = currencyConverter;
+        this.moneyPrinter = moneyPrinter;
     }
 
     public AccountHolderFactory getAccountHolderFactory() {
@@ -85,5 +93,13 @@ public class Container {
 
     public BankAccountSerializer getXmlSerializer() {
         return xmlSerializer;
+    }
+
+    public CurrencyConverter getCurrencyConverter() {
+        return currencyConverter;
+    }
+
+    public MoneyPrinter getMoneyPrinter() {
+        return moneyPrinter;
     }
 }

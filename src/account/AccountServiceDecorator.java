@@ -1,5 +1,6 @@
 package account;
 
+import currency.Currency;
 import person.AccountHolder;
 
 import java.util.List;
@@ -13,23 +14,23 @@ public abstract class AccountServiceDecorator implements AccountService {
     }
 
     @Override
-    public BankAccount createCurrentAccount(AccountHolder accountHolder) {
-        return accountService.createCurrentAccount(accountHolder);
+    public BankAccount createCurrentAccount(AccountHolder accountHolder, Currency currency) {
+        return accountService.createCurrentAccount(accountHolder, currency);
     }
 
     @Override
-    public BankAccount createBusinessAccount(AccountHolder accountHolder) {
-        return accountService.createBusinessAccount(accountHolder);
+    public BankAccount createBusinessAccount(AccountHolder accountHolder, Currency currency) {
+        return accountService.createBusinessAccount(accountHolder, currency);
     }
 
     @Override
-    public BankAccount createStudentAccount(AccountHolder accountHolder, String schoolName) {
-        return accountService.createStudentAccount(accountHolder, schoolName);
+    public BankAccount createStudentAccount(AccountHolder accountHolder, String schoolName, Currency currency) {
+        return accountService.createStudentAccount(accountHolder, schoolName, currency);
     }
 
     @Override
-    public BankAccount createSavingsAccount(AccountHolder accountHolder) {
-        return accountService.createSavingsAccount(accountHolder);
+    public BankAccount createSavingsAccount(AccountHolder accountHolder, Currency currency) {
+        return accountService.createSavingsAccount(accountHolder, currency);
     }
 
     @Override

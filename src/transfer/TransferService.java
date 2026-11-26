@@ -46,7 +46,8 @@ public class TransferService {
         transferLoggerService.logTransfer(
                 fromAccount.getAccountNumber(),
                 toAccount.getAccountNumber(),
-                amount
+                amount,
+                fromAccount.getCurrency()
         );
     }
 

@@ -2,6 +2,8 @@ import account.*;
 import account.serialization.BankAccountSerializer;
 import container.Container;
 import container.ContainerFactory;
+import currency.Currency;
+import currency.MoneyPrinter;
 import history.TransferLoggerService;
 import person.AccountHolder;
 import person.AccountHolderFactory;
@@ -13,6 +15,7 @@ public class Main {
     public static void main(String[] args) {
 
         Container container = new ContainerFactory().create();
+        MoneyPrinter moneyPrinter = container.getMoneyPrinter();
 
         AccountHolderFactory creator = container.getAccountHolderFactory();
         AccountHolder holder = creator.newAccountHolder("Daniel", "Bisko");
@@ -21,22 +24,26 @@ public class Main {
 
         IO.println("ORIGINAL");
         IO.println("=========");
-        BankAccount currentAccount = original.createCurrentAccount(holder);
+        BankAccount currentAccount = original.createCurrentAccount(holder, Currency.CZK);
 
         IO.println("WITH LOGGER");
         AccountService withLogger = new LoggingAccountService(original);
-        withLogger.createBusinessAccount(holder);
+        withLogger.createBusinessAccount(holder, Currency.EUR);
         IO.println("========");
 
         IO.println("WITH TIME LOGGER");
         AccountService withTimeLogger = new TimeLoggingAccountService(original);
-        withTimeLogger.createSavingsAccount(holder);
+        withTimeLogger.createSavingsAccount(holder, Currency.CZK);
         IO.println("========");
 
         IO.println("WITH LOGGER AND TIME LOGGER");
         AccountService withLoggerAndTimeLogger =
                 new TimeLoggingAccountService(new LoggingAccountService(original));
-        BankAccount studentAccount = withLoggerAndTimeLogger.createStudentAccount(holder, "DELTA");
+        BankAccount studentAccount = withLoggerAndTimeLogger.createStudentAccount(
+                holder,
+                "DELTA",
+                Currency.USD
+        );
         IO.println("========");
 
         BankAccount businessAccount = original.getBankAccounts().get(1);
@@ -58,13 +65,13 @@ public class Main {
         depositService.deposit(currentAccount, 5000);
         depositService.deposit(businessAccount, 10000);
 
-        printBalances(currentAccount, businessAccount, studentAccount);
+        printBalances(moneyPrinter, currentAccount, businessAccount, studentAccount);
 
         transferService.transfer(currentAccount, studentAccount, 1000);
-        printBalances(currentAccount, businessAccount, studentAccount);
+        printBalances(moneyPrinter, currentAccount, businessAccount, studentAccount);
 
         transferService.transfer(businessAccount, currentAccount, 2000);
-        printBalances(currentAccount, businessAccount, studentAccount);
+        printBalances(moneyPrinter, currentAccount, businessAccount, studentAccount);
 
         try {
             transferService.transfer(currentAccount, studentAccount, -500);
@@ -87,9 +94,14 @@ public class Main {
         transferLoggerService.printHistory();
     }
 
-    private static void printBalances(BankAccount current, BankAccount business, BankAccount student) {
-        IO.println("Current:  " + current.getBalance() + " Kč");
-        IO.println("Business: " + business.getBalance() + " Kč");
-        IO.println("Student:  " + student.getBalance() + " Kč");
+    private static void printBalances(
+            MoneyPrinter moneyPrinter,
+            BankAccount current,
+            BankAccount business,
+            BankAccount student
+    ) {
+        IO.println("Current:  " + moneyPrinter.format(current.getBalance(), current.getCurrency()));
+        IO.println("Business: " + moneyPrinter.format(business.getBalance(), business.getCurrency()));
+        IO.println("Student:  " + moneyPrinter.format(student.getBalance(), student.getCurrency()));
     }
 }

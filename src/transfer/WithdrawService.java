@@ -29,7 +29,11 @@ public class WithdrawService {
 
         account.setBalance(newBalance);
 
-        transferLoggerService.logWithdraw(account.getAccountNumber(), amount);
+        transferLoggerService.logWithdraw(
+                account.getAccountNumber(),
+                amount,
+                account.getCurrency()
+        );
     }
 
     private int getWithDrawLimit(BankAccount account) {

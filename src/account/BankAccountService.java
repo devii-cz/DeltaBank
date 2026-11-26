@@ -1,5 +1,6 @@
 package account;
 
+import currency.Currency;
 import person.AccountHolder;
 
 import java.util.ArrayList;
@@ -15,29 +16,29 @@ public class BankAccountService implements AccountService {
     }
 
     @Override
-    public BankAccount createCurrentAccount(AccountHolder accountHolder) {
-        BankAccount account = bankAccountFactory.newCurrentAccount(accountHolder);
+    public BankAccount createCurrentAccount(AccountHolder accountHolder, Currency currency) {
+        BankAccount account = bankAccountFactory.newCurrentAccount(accountHolder, currency);
         bankAccounts.add(account);
         return account;
     }
 
     @Override
-    public BankAccount createBusinessAccount(AccountHolder accountHolder) {
-        BankAccount account = bankAccountFactory.newBusinessAccount(accountHolder);
+    public BankAccount createBusinessAccount(AccountHolder accountHolder, Currency currency) {
+        BankAccount account = bankAccountFactory.newBusinessAccount(accountHolder, currency);
         bankAccounts.add(account);
         return account;
     }
 
     @Override
-    public BankAccount createStudentAccount(AccountHolder accountHolder, String schoolName) {
-        BankAccount account = bankAccountFactory.newStudentAccount(accountHolder, schoolName);
+    public BankAccount createStudentAccount(AccountHolder accountHolder, String schoolName, Currency currency) {
+        BankAccount account = bankAccountFactory.newStudentAccount(accountHolder, schoolName, currency);
         bankAccounts.add(account);
         return account;
     }
 
     @Override
-    public BankAccount createSavingsAccount(AccountHolder accountHolder) {
-        BankAccount account = bankAccountFactory.newSavingsAccount(accountHolder);
+    public BankAccount createSavingsAccount(AccountHolder accountHolder, Currency currency) {
+        BankAccount account = bankAccountFactory.newSavingsAccount(accountHolder, currency);
         bankAccounts.add(account);
         return account;
     }

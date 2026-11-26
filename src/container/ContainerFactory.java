@@ -6,6 +6,10 @@ import account.BankAccountService;
 import account.serialization.BankAccountGsonSerializer;
 import account.serialization.BankAccountSerializer;
 import account.serialization.BankAccountXmlSerializer;
+import currency.Currency;
+import currency.CurrencyConverter;
+import currency.FixedRateCurrencyConverter;
+import currency.MoneyPrinter;
 import history.TransactionFactory;
 import history.TransferLoggerService;
 import person.AccountHolderFactory;
@@ -20,8 +24,12 @@ public class ContainerFactory {
         BankAccountFactory bankAccountFactory = new BankAccountFactory();
         TransactionFactory transactionFactory = new TransactionFactory();
 
+        CurrencyConverter currencyConverter = new FixedRateCurrencyConverter();
+        Currency displayCurrency = Currency.EUR;
+        MoneyPrinter moneyPrinter = new MoneyPrinter(currencyConverter, displayCurrency);
+
         AccountService accountService = new BankAccountService(bankAccountFactory);
-        TransferLoggerService transferLoggerService = new TransferLoggerService(transactionFactory);
+        TransferLoggerService transferLoggerService = new TransferLoggerService(transactionFactory, moneyPrinter);
 
         DepositService depositService = new DepositService(transferLoggerService);
         WithdrawService withdrawService = new WithdrawService(transferLoggerService);
@@ -40,7 +48,9 @@ public class ContainerFactory {
                 withdrawService,
                 transferService,
                 jsonSerializer,
-                xmlSerializer
+                xmlSerializer,
+                currencyConverter,
+                moneyPrinter
         );
     }
 }
